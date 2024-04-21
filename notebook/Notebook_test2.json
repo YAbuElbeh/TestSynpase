@@ -4,132 +4,47 @@
 		"nbformat": 4,
 		"nbformat_minor": 2,
 		"bigDataPool": {
-			"referenceName": "spk32",
+			"referenceName": "spk33",
 			"type": "BigDataPoolReference"
 		},
 		"sessionProperties": {
-			"driverMemory": "28g",
-			"driverCores": 4,
-			"executorMemory": "28g",
-			"executorCores": 4,
+			"driverMemory": "56g",
+			"driverCores": 8,
+			"executorMemory": "56g",
+			"executorCores": 8,
 			"numExecutors": 2,
 			"runAsWorkspaceSystemIdentity": false,
 			"conf": {
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "b7a0cadd-ad9a-45b2-a9c2-2ef1ff04a456"
+				"spark.autotune.trackingId": "28b3d83c-2558-46c1-abf3-dfa5577220c8"
 			}
 		},
 		"metadata": {
 			"saveOutput": true,
-			"synapse_widget": {
-				"version": "0.1",
-				"state": {
-					"c40ce1f5-ba74-46d2-b5bf-22e897aa73ce": {
-						"type": "Synapse.DataFrame",
-						"sync_state": {
-							"table": {
-								"rows": [
-									{
-										"0": "2984641",
-										"1": "Emily",
-										"2": "35",
-										"3": "cardio",
-										"4": "01.09.2021"
-									},
-									{
-										"0": "9454384",
-										"1": "Riikka",
-										"2": "86",
-										"3": "ortho",
-										"4": "21.07.2021"
-									},
-									{
-										"0": "9266396",
-										"1": "Fanny",
-										"2": "86",
-										"3": "ortho",
-										"4": "03.06.2021"
-									},
-									{
-										"0": "5247541",
-										"1": "Urooj",
-										"2": "35",
-										"3": "cardio",
-										"4": "21.08.2021"
-									}
-								],
-								"schema": [
-									{
-										"key": "0",
-										"name": "PID",
-										"type": "string"
-									},
-									{
-										"key": "1",
-										"name": "Name",
-										"type": "string"
-									},
-									{
-										"key": "2",
-										"name": "DID",
-										"type": "string"
-									},
-									{
-										"key": "3",
-										"name": "DName",
-										"type": "string"
-									},
-									{
-										"key": "4",
-										"name": "VisitDate",
-										"type": "string"
-									}
-								],
-								"truncated": false
-							},
-							"isSummary": false,
-							"language": "scala"
-						},
-						"persist_state": {
-							"view": {
-								"type": "details",
-								"chartOptions": {
-									"chartType": "bar",
-									"aggregationType": "count",
-									"categoryFieldKeys": [
-										"0"
-									],
-									"seriesFieldKeys": [
-										"0"
-									],
-									"isStacked": false
-								}
-							}
-						}
-					}
-				}
-			},
 			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "python"
+			},
 			"language_info": {
 				"name": "python"
 			},
 			"a365ComputeOptions": {
-				"id": "/subscriptions/12a9c9ee-0cbb-4ea3-8995-63a79485e92b/resourceGroups/SynapseRG/providers/Microsoft.Synapse/workspaces/shared-vnet-workspace/bigDataPools/spk32",
-				"name": "spk32",
+				"id": "/subscriptions/12a9c9ee-0cbb-4ea3-8995-63a79485e92b/resourceGroups/SynapseRG/providers/Microsoft.Synapse/workspaces/shared-vnet-workspace/bigDataPools/spk33",
+				"name": "spk33",
 				"type": "Spark",
-				"endpoint": "https://shared-vnet-workspace.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/spk32",
+				"endpoint": "https://shared-vnet-workspace.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/spk33",
 				"auth": {
 					"type": "AAD",
-					"authResource": "https://dev.azuresynapse.net",
-					"authHeader": null
+					"authResource": "https://dev.azuresynapse.net"
 				},
-				"sparkVersion": "3.2",
+				"sparkVersion": "3.3",
 				"nodeCount": 10,
-				"cores": 4,
-				"memory": 28,
-				"extraHeader": null
+				"cores": 8,
+				"memory": 56,
+				"automaticScaleJobs": false
 			},
 			"sessionKeepAliveTimeout": 30
 		},

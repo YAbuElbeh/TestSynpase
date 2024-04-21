@@ -4,309 +4,47 @@
 		"nbformat": 4,
 		"nbformat_minor": 2,
 		"bigDataPool": {
-			"referenceName": "spk32",
+			"referenceName": "spk33",
 			"type": "BigDataPoolReference"
 		},
 		"sessionProperties": {
-			"driverMemory": "28g",
-			"driverCores": 4,
-			"executorMemory": "28g",
-			"executorCores": 4,
+			"driverMemory": "56g",
+			"driverCores": 8,
+			"executorMemory": "56g",
+			"executorCores": 8,
 			"numExecutors": 2,
 			"runAsWorkspaceSystemIdentity": false,
 			"conf": {
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "0ab6a13f-44da-4e33-8551-61c0214fc6a5"
+				"spark.autotune.trackingId": "e172953b-12b7-4453-9ad9-04c0f9f8629e"
 			}
 		},
 		"metadata": {
 			"saveOutput": true,
-			"synapse_widget": {
-				"version": "0.1",
-				"state": {
-					"b74cd7ef-f20e-4f5b-a025-8e6ca52d2874": {
-						"type": "Synapse.DataFrame",
-						"sync_state": {
-							"table": {
-								"rows": [
-									{
-										"0": "89760",
-										"1": "10787",
-										"2": "Erie",
-										"3": "Colorado",
-										"4": "United States",
-										"5": "North America",
-										"6": "Rocky Mountain",
-										"7": "Americas",
-										"8": "Northern America",
-										"9": "POINT (-105.0499817 40.0502623)",
-										"10": "18135",
-										"11": "2013-07-01T16:00:00Z",
-										"12": "2015-07-01T16:00:00Z",
-										"13": "1"
-									},
-									{
-										"0": "89761",
-										"1": "10862",
-										"2": "Estes Park",
-										"3": "Colorado",
-										"4": "United States",
-										"5": "North America",
-										"6": "Rocky Mountain",
-										"7": "Americas",
-										"8": "Northern America",
-										"9": "POINT (-105.5216651 40.3772059)",
-										"10": "5858",
-										"11": "2013-07-01T16:00:00Z",
-										"12": "2015-07-01T16:00:00Z",
-										"13": "1"
-									},
-									{
-										"0": "90021",
-										"1": "13500",
-										"2": "Government Camp",
-										"3": "Oregon",
-										"4": "United States",
-										"5": "North America",
-										"6": "Far West",
-										"7": "Americas",
-										"8": "Northern America",
-										"9": "POINT (-121.7547998 45.3040072)",
-										"10": "193",
-										"11": "2013-07-01T16:00:00Z",
-										"12": "2015-07-01T16:00:00Z",
-										"13": "1"
-									},
-									{
-										"0": "90022",
-										"1": "13612",
-										"2": "Grand Ronde",
-										"3": "Oregon",
-										"4": "United States",
-										"5": "North America",
-										"6": "Far West",
-										"7": "Americas",
-										"8": "Northern America",
-										"9": "POINT (-123.6092771 45.060113)",
-										"10": "1661",
-										"11": "2013-07-01T16:00:00Z",
-										"12": "2015-07-01T16:00:00Z",
-										"13": "1"
-									},
-									{
-										"0": "90023",
-										"1": "13652",
-										"2": "Granite",
-										"3": "Oregon",
-										"4": "United States",
-										"5": "North America",
-										"6": "Far West",
-										"7": "Americas",
-										"8": "Northern America",
-										"9": "POINT (-118.4177241 44.8093131)",
-										"10": "38",
-										"11": "2013-07-01T16:00:00Z",
-										"12": "2015-07-01T16:00:00Z",
-										"13": "1"
-									},
-									{
-										"0": "90024",
-										"1": "13690",
-										"2": "Grants Pass",
-										"3": "Oregon",
-										"4": "United States",
-										"5": "North America",
-										"6": "Far West",
-										"7": "Americas",
-										"8": "Northern America",
-										"9": "POINT (-123.3283925 42.439007)",
-										"10": "34533",
-										"11": "2013-07-01T16:00:00Z",
-										"12": "2015-07-01T16:00:00Z",
-										"13": "1"
-									},
-									{
-										"0": "90025",
-										"1": "13724",
-										"2": "Grass Valley",
-										"3": "Oregon",
-										"4": "United States",
-										"5": "North America",
-										"6": "Far West",
-										"7": "Americas",
-										"8": "Northern America",
-										"9": "POINT (-120.7856114 45.3601247)",
-										"10": "164",
-										"11": "2013-07-01T16:00:00Z",
-										"12": "2015-07-01T16:00:00Z",
-										"13": "1"
-									},
-									{
-										"0": "90026",
-										"1": "13814",
-										"2": "Green",
-										"3": "Oregon",
-										"4": "United States",
-										"5": "North America",
-										"6": "Far West",
-										"7": "Americas",
-										"8": "Northern America",
-										"9": "POINT (-123.3678491 43.160394)",
-										"10": "7515",
-										"11": "2013-07-01T16:00:00Z",
-										"12": "2015-07-01T16:00:00Z",
-										"13": "1"
-									},
-									{
-										"0": "90027",
-										"1": "13913",
-										"2": "Greenhorn",
-										"3": "Oregon",
-										"4": "United States",
-										"5": "North America",
-										"6": "Far West",
-										"7": "Americas",
-										"8": "Northern America",
-										"9": "POINT (-118.4913355 44.7079299)",
-										"10": "0",
-										"11": "2013-07-01T16:00:00Z",
-										"12": "2015-07-01T16:00:00Z",
-										"13": "1"
-									},
-									{
-										"0": "90028",
-										"1": "14028",
-										"2": "Gresham",
-										"3": "Oregon",
-										"4": "United States",
-										"5": "North America",
-										"6": "Far West",
-										"7": "Americas",
-										"8": "Northern America",
-										"9": "POINT (-122.4314796 45.4981757)",
-										"10": "105594",
-										"11": "2013-07-01T16:00:00Z",
-										"12": "2015-07-01T16:00:00Z",
-										"13": "1"
-									}
-								],
-								"schema": [
-									{
-										"key": "0",
-										"name": "CityKey",
-										"type": "string"
-									},
-									{
-										"key": "1",
-										"name": "WWICityID",
-										"type": "string"
-									},
-									{
-										"key": "2",
-										"name": "City",
-										"type": "string"
-									},
-									{
-										"key": "3",
-										"name": "StateProvince",
-										"type": "string"
-									},
-									{
-										"key": "4",
-										"name": "Country",
-										"type": "string"
-									},
-									{
-										"key": "5",
-										"name": "Continent",
-										"type": "string"
-									},
-									{
-										"key": "6",
-										"name": "SalesTerritory",
-										"type": "string"
-									},
-									{
-										"key": "7",
-										"name": "Region",
-										"type": "string"
-									},
-									{
-										"key": "8",
-										"name": "Subregion",
-										"type": "string"
-									},
-									{
-										"key": "9",
-										"name": "Location",
-										"type": "string"
-									},
-									{
-										"key": "10",
-										"name": "LatestRecordedPopulation",
-										"type": "string"
-									},
-									{
-										"key": "11",
-										"name": "ValidFrom",
-										"type": "string"
-									},
-									{
-										"key": "12",
-										"name": "ValidTo",
-										"type": "string"
-									},
-									{
-										"key": "13",
-										"name": "LineageKey",
-										"type": "string"
-									}
-								],
-								"truncated": false
-							},
-							"isSummary": false,
-							"language": "scala"
-						},
-						"persist_state": {
-							"view": {
-								"type": "details",
-								"chartOptions": {
-									"chartType": "bar",
-									"aggregationType": "count",
-									"categoryFieldKeys": [
-										"0"
-									],
-									"seriesFieldKeys": [
-										"0"
-									],
-									"isStacked": false
-								}
-							}
-						}
-					}
-				}
-			},
 			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "python"
+			},
 			"language_info": {
 				"name": "python"
 			},
 			"a365ComputeOptions": {
-				"id": "/subscriptions/12a9c9ee-0cbb-4ea3-8995-63a79485e92b/resourceGroups/SynapseRG/providers/Microsoft.Synapse/workspaces/shared-vnet-workspace/bigDataPools/spk32",
-				"name": "spk32",
+				"id": "/subscriptions/12a9c9ee-0cbb-4ea3-8995-63a79485e92b/resourceGroups/SynapseRG/providers/Microsoft.Synapse/workspaces/shared-vnet-workspace/bigDataPools/spk33",
+				"name": "spk33",
 				"type": "Spark",
-				"endpoint": "https://shared-vnet-workspace.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/spk32",
+				"endpoint": "https://shared-vnet-workspace.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/spk33",
 				"auth": {
 					"type": "AAD",
-					"authResource": "https://dev.azuresynapse.net",
-					"authHeader": null
+					"authResource": "https://dev.azuresynapse.net"
 				},
-				"sparkVersion": "3.2",
+				"sparkVersion": "3.3",
 				"nodeCount": 10,
-				"cores": 4,
-				"memory": 28,
-				"extraHeader": null
+				"cores": 8,
+				"memory": 56,
+				"automaticScaleJobs": false
 			},
 			"sessionKeepAliveTimeout": 30
 		},
