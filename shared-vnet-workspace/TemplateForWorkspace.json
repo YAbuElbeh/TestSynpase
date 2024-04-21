@@ -1,0 +1,1965 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"workspaceName": {
+			"type": "string",
+			"metadata": "Workspace name",
+			"defaultValue": "shared-vnet-workspace"
+		},
+		"shared-vnet-workspace-WorkspaceDefaultSqlServer_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'shared-vnet-workspace-WorkspaceDefaultSqlServer'",
+			"defaultValue": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=tcp:shared-vnet-workspace.sql.azuresynapse.net,1433;Initial Catalog=@{linkedService().DBName}"
+		},
+		"shared-vnet-workspace-WorkspaceDefaultStorage_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://sharedvnetworkspace.dfs.core.windows.net"
+		}
+	},
+	"variables": {
+		"workspaceId": "[concat('Microsoft.Synapse/workspaces/', parameters('workspaceName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('workspaceName'), '/spk32')]",
+			"type": "Microsoft.Synapse/workspaces/bigDataPools",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/spk33')]",
+			"type": "Microsoft.Synapse/workspaces/bigDataPools",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Pipeline 1')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "Notebook1",
+						"type": "SynapseNotebook",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebook": {
+								"referenceName": "Test_Custom_Log",
+								"type": "NotebookReference"
+							},
+							"snapshot": true,
+							"sparkPool": {
+								"referenceName": "spk33",
+								"type": "BigDataPoolReference"
+							},
+							"executorSize": "Small",
+							"conf": {
+								"spark.dynamicAllocation.enabled": null,
+								"spark.dynamicAllocation.minExecutors": null,
+								"spark.dynamicAllocation.maxExecutors": null
+							},
+							"driverSize": "Small",
+							"numExecutors": null
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-01-09T14:31:15Z"
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/notebooks/Test_Custom_Log')]",
+				"[concat(variables('workspaceId'), '/bigDataPools/spk33')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/shared-vnet-workspace-WorkspaceDefaultSqlServer')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"parameters": {
+					"DBName": {
+						"type": "String"
+					}
+				},
+				"annotations": [],
+				"type": "AzureSqlDW",
+				"typeProperties": {
+					"connectionString": "[parameters('shared-vnet-workspace-WorkspaceDefaultSqlServer_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/shared-vnet-workspace-WorkspaceDefaultStorage')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('shared-vnet-workspace-WorkspaceDefaultStorage_properties_typeProperties_url')]"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/AutoResolveIntegrationRuntime')]",
+			"type": "Microsoft.Synapse/workspaces/integrationRuntimes",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"type": "Managed",
+				"typeProperties": {
+					"computeProperties": {
+						"location": "AutoResolve",
+						"dataFlowProperties": {
+							"computeType": "General",
+							"coreCount": 8,
+							"timeToLive": 0
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/WorkspaceSystemIdentity')]",
+			"type": "Microsoft.Synapse/workspaces/credentials",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"type": "ManagedIdentity",
+				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Notebook 1')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "spk33",
+					"type": "BigDataPoolReference"
+				},
+				"sessionProperties": {
+					"driverMemory": "56g",
+					"driverCores": 8,
+					"executorMemory": "56g",
+					"executorCores": 8,
+					"numExecutors": 2,
+					"runAsWorkspaceSystemIdentity": false,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "3b7048c3-d42d-4b73-bcdc-8eae4f2ea753"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"enableDebugMode": false,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "python"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/12a9c9ee-0cbb-4ea3-8995-63a79485e92b/resourceGroups/SynapseRG/providers/Microsoft.Synapse/workspaces/shared-vnet-workspace/bigDataPools/spk33",
+						"name": "spk33",
+						"type": "Spark",
+						"endpoint": "https://shared-vnet-workspace.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/spk33",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "3.3",
+						"nodeCount": 10,
+						"cores": 8,
+						"memory": 56,
+						"automaticScaleJobs": false
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"metadata": {},
+						"source": [
+							"mssparkutils.notebook.runMultiple([\"Notebook_test1\", \"Notebook_test2\"])"
+						],
+						"outputs": [],
+						"execution_count": 3
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"df = spark.read.load('abfss://sharedvnetworkspace@sharedvnetworkspace.dfs.core.windows.net/TestDirectory1/*', format='csv', header = True)\r\n",
+							"display(df.limit(10))"
+						],
+						"outputs": [],
+						"execution_count": 4
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"df.printSchema()"
+						],
+						"outputs": [],
+						"execution_count": 5
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"df = spark.read.load('abfss://sharedvnetworkspace@sharedvnetworkspace.dfs.core.windows.net/TestDirectory2/*', format='csv', header = True)\r\n",
+							"display(df.limit(10))"
+						],
+						"outputs": [],
+						"execution_count": 6
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"df.printSchema()"
+						],
+						"outputs": [],
+						"execution_count": 7
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Notebook_test1')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "spk32",
+					"type": "BigDataPoolReference"
+				},
+				"sessionProperties": {
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 2,
+					"runAsWorkspaceSystemIdentity": false,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "0ab6a13f-44da-4e33-8551-61c0214fc6a5"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"synapse_widget": {
+						"version": "0.1",
+						"state": {
+							"b74cd7ef-f20e-4f5b-a025-8e6ca52d2874": {
+								"type": "Synapse.DataFrame",
+								"sync_state": {
+									"table": {
+										"rows": [
+											{
+												"0": "89760",
+												"1": "10787",
+												"2": "Erie",
+												"3": "Colorado",
+												"4": "United States",
+												"5": "North America",
+												"6": "Rocky Mountain",
+												"7": "Americas",
+												"8": "Northern America",
+												"9": "POINT (-105.0499817 40.0502623)",
+												"10": "18135",
+												"11": "2013-07-01T16:00:00Z",
+												"12": "2015-07-01T16:00:00Z",
+												"13": "1"
+											},
+											{
+												"0": "89761",
+												"1": "10862",
+												"2": "Estes Park",
+												"3": "Colorado",
+												"4": "United States",
+												"5": "North America",
+												"6": "Rocky Mountain",
+												"7": "Americas",
+												"8": "Northern America",
+												"9": "POINT (-105.5216651 40.3772059)",
+												"10": "5858",
+												"11": "2013-07-01T16:00:00Z",
+												"12": "2015-07-01T16:00:00Z",
+												"13": "1"
+											},
+											{
+												"0": "90021",
+												"1": "13500",
+												"2": "Government Camp",
+												"3": "Oregon",
+												"4": "United States",
+												"5": "North America",
+												"6": "Far West",
+												"7": "Americas",
+												"8": "Northern America",
+												"9": "POINT (-121.7547998 45.3040072)",
+												"10": "193",
+												"11": "2013-07-01T16:00:00Z",
+												"12": "2015-07-01T16:00:00Z",
+												"13": "1"
+											},
+											{
+												"0": "90022",
+												"1": "13612",
+												"2": "Grand Ronde",
+												"3": "Oregon",
+												"4": "United States",
+												"5": "North America",
+												"6": "Far West",
+												"7": "Americas",
+												"8": "Northern America",
+												"9": "POINT (-123.6092771 45.060113)",
+												"10": "1661",
+												"11": "2013-07-01T16:00:00Z",
+												"12": "2015-07-01T16:00:00Z",
+												"13": "1"
+											},
+											{
+												"0": "90023",
+												"1": "13652",
+												"2": "Granite",
+												"3": "Oregon",
+												"4": "United States",
+												"5": "North America",
+												"6": "Far West",
+												"7": "Americas",
+												"8": "Northern America",
+												"9": "POINT (-118.4177241 44.8093131)",
+												"10": "38",
+												"11": "2013-07-01T16:00:00Z",
+												"12": "2015-07-01T16:00:00Z",
+												"13": "1"
+											},
+											{
+												"0": "90024",
+												"1": "13690",
+												"2": "Grants Pass",
+												"3": "Oregon",
+												"4": "United States",
+												"5": "North America",
+												"6": "Far West",
+												"7": "Americas",
+												"8": "Northern America",
+												"9": "POINT (-123.3283925 42.439007)",
+												"10": "34533",
+												"11": "2013-07-01T16:00:00Z",
+												"12": "2015-07-01T16:00:00Z",
+												"13": "1"
+											},
+											{
+												"0": "90025",
+												"1": "13724",
+												"2": "Grass Valley",
+												"3": "Oregon",
+												"4": "United States",
+												"5": "North America",
+												"6": "Far West",
+												"7": "Americas",
+												"8": "Northern America",
+												"9": "POINT (-120.7856114 45.3601247)",
+												"10": "164",
+												"11": "2013-07-01T16:00:00Z",
+												"12": "2015-07-01T16:00:00Z",
+												"13": "1"
+											},
+											{
+												"0": "90026",
+												"1": "13814",
+												"2": "Green",
+												"3": "Oregon",
+												"4": "United States",
+												"5": "North America",
+												"6": "Far West",
+												"7": "Americas",
+												"8": "Northern America",
+												"9": "POINT (-123.3678491 43.160394)",
+												"10": "7515",
+												"11": "2013-07-01T16:00:00Z",
+												"12": "2015-07-01T16:00:00Z",
+												"13": "1"
+											},
+											{
+												"0": "90027",
+												"1": "13913",
+												"2": "Greenhorn",
+												"3": "Oregon",
+												"4": "United States",
+												"5": "North America",
+												"6": "Far West",
+												"7": "Americas",
+												"8": "Northern America",
+												"9": "POINT (-118.4913355 44.7079299)",
+												"10": "0",
+												"11": "2013-07-01T16:00:00Z",
+												"12": "2015-07-01T16:00:00Z",
+												"13": "1"
+											},
+											{
+												"0": "90028",
+												"1": "14028",
+												"2": "Gresham",
+												"3": "Oregon",
+												"4": "United States",
+												"5": "North America",
+												"6": "Far West",
+												"7": "Americas",
+												"8": "Northern America",
+												"9": "POINT (-122.4314796 45.4981757)",
+												"10": "105594",
+												"11": "2013-07-01T16:00:00Z",
+												"12": "2015-07-01T16:00:00Z",
+												"13": "1"
+											}
+										],
+										"schema": [
+											{
+												"key": "0",
+												"name": "CityKey",
+												"type": "string"
+											},
+											{
+												"key": "1",
+												"name": "WWICityID",
+												"type": "string"
+											},
+											{
+												"key": "2",
+												"name": "City",
+												"type": "string"
+											},
+											{
+												"key": "3",
+												"name": "StateProvince",
+												"type": "string"
+											},
+											{
+												"key": "4",
+												"name": "Country",
+												"type": "string"
+											},
+											{
+												"key": "5",
+												"name": "Continent",
+												"type": "string"
+											},
+											{
+												"key": "6",
+												"name": "SalesTerritory",
+												"type": "string"
+											},
+											{
+												"key": "7",
+												"name": "Region",
+												"type": "string"
+											},
+											{
+												"key": "8",
+												"name": "Subregion",
+												"type": "string"
+											},
+											{
+												"key": "9",
+												"name": "Location",
+												"type": "string"
+											},
+											{
+												"key": "10",
+												"name": "LatestRecordedPopulation",
+												"type": "string"
+											},
+											{
+												"key": "11",
+												"name": "ValidFrom",
+												"type": "string"
+											},
+											{
+												"key": "12",
+												"name": "ValidTo",
+												"type": "string"
+											},
+											{
+												"key": "13",
+												"name": "LineageKey",
+												"type": "string"
+											}
+										],
+										"truncated": false
+									},
+									"isSummary": false,
+									"language": "scala"
+								},
+								"persist_state": {
+									"view": {
+										"type": "details",
+										"chartOptions": {
+											"chartType": "bar",
+											"aggregationType": "count",
+											"categoryFieldKeys": [
+												"0"
+											],
+											"seriesFieldKeys": [
+												"0"
+											],
+											"isStacked": false
+										}
+									}
+								}
+							}
+						}
+					},
+					"enableDebugMode": false,
+					"language_info": {
+						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/12a9c9ee-0cbb-4ea3-8995-63a79485e92b/resourceGroups/SynapseRG/providers/Microsoft.Synapse/workspaces/shared-vnet-workspace/bigDataPools/spk32",
+						"name": "spk32",
+						"type": "Spark",
+						"endpoint": "https://shared-vnet-workspace.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/spk32",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net",
+							"authHeader": null
+						},
+						"sparkVersion": "3.2",
+						"nodeCount": 10,
+						"cores": 4,
+						"memory": 28,
+						"extraHeader": null
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"metadata": {
+							"collapsed": false
+						},
+						"source": [
+							"df = spark.read.load('abfss://sharedvnetworkspace@sharedvnetworkspace.dfs.core.windows.net/SampleData/*', format='csv', header = True)\r\n",
+							"display(df.limit(10))"
+						],
+						"outputs": [],
+						"execution_count": 38
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"df.printSchema()"
+						],
+						"outputs": [],
+						"execution_count": 39
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"df.createOrReplaceTempView(\"test_view_1\")"
+						],
+						"outputs": [],
+						"execution_count": 40
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"source_df = spark.sql(\"select * from test_view_1\")\r\n",
+							"\r\n",
+							"source_df.write.format('csv').option(\"header\",True).save('abfss://sharedvnetworkspace@sharedvnetworkspace.dfs.core.windows.net/TestDirectory1/')"
+						],
+						"outputs": [],
+						"execution_count": 42
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Notebook_test2')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "spk32",
+					"type": "BigDataPoolReference"
+				},
+				"sessionProperties": {
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 2,
+					"runAsWorkspaceSystemIdentity": false,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "b7a0cadd-ad9a-45b2-a9c2-2ef1ff04a456"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"synapse_widget": {
+						"version": "0.1",
+						"state": {
+							"c40ce1f5-ba74-46d2-b5bf-22e897aa73ce": {
+								"type": "Synapse.DataFrame",
+								"sync_state": {
+									"table": {
+										"rows": [
+											{
+												"0": "2984641",
+												"1": "Emily",
+												"2": "35",
+												"3": "cardio",
+												"4": "01.09.2021"
+											},
+											{
+												"0": "9454384",
+												"1": "Riikka",
+												"2": "86",
+												"3": "ortho",
+												"4": "21.07.2021"
+											},
+											{
+												"0": "9266396",
+												"1": "Fanny",
+												"2": "86",
+												"3": "ortho",
+												"4": "03.06.2021"
+											},
+											{
+												"0": "5247541",
+												"1": "Urooj",
+												"2": "35",
+												"3": "cardio",
+												"4": "21.08.2021"
+											}
+										],
+										"schema": [
+											{
+												"key": "0",
+												"name": "PID",
+												"type": "string"
+											},
+											{
+												"key": "1",
+												"name": "Name",
+												"type": "string"
+											},
+											{
+												"key": "2",
+												"name": "DID",
+												"type": "string"
+											},
+											{
+												"key": "3",
+												"name": "DName",
+												"type": "string"
+											},
+											{
+												"key": "4",
+												"name": "VisitDate",
+												"type": "string"
+											}
+										],
+										"truncated": false
+									},
+									"isSummary": false,
+									"language": "scala"
+								},
+								"persist_state": {
+									"view": {
+										"type": "details",
+										"chartOptions": {
+											"chartType": "bar",
+											"aggregationType": "count",
+											"categoryFieldKeys": [
+												"0"
+											],
+											"seriesFieldKeys": [
+												"0"
+											],
+											"isStacked": false
+										}
+									}
+								}
+							}
+						}
+					},
+					"enableDebugMode": false,
+					"language_info": {
+						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/12a9c9ee-0cbb-4ea3-8995-63a79485e92b/resourceGroups/SynapseRG/providers/Microsoft.Synapse/workspaces/shared-vnet-workspace/bigDataPools/spk32",
+						"name": "spk32",
+						"type": "Spark",
+						"endpoint": "https://shared-vnet-workspace.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/spk32",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net",
+							"authHeader": null
+						},
+						"sparkVersion": "3.2",
+						"nodeCount": 10,
+						"cores": 4,
+						"memory": 28,
+						"extraHeader": null
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"metadata": {
+							"collapsed": false
+						},
+						"source": [
+							"df = spark.read.load('abfss://sharedvnetworkspace@sharedvnetworkspace.dfs.core.windows.net/TestRead/patients_visit_data_css_test.csv', format='csv'\r\n",
+							"## If header exists uncomment line below\r\n",
+							", header=True\r\n",
+							")\r\n",
+							"display(df.limit(10))"
+						],
+						"outputs": [],
+						"execution_count": 20
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"df.printSchema()"
+						],
+						"outputs": [],
+						"execution_count": 21
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"df.createOrReplaceTempView(\"test_view_1\")"
+						],
+						"outputs": [],
+						"execution_count": 22
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"source_df = spark.sql(\"select * from test_view_1\")\r\n",
+							"\r\n",
+							"source_df.write.format('csv').option(\"header\",True).save('abfss://sharedvnetworkspace@sharedvnetworkspace.dfs.core.windows.net/TestDirectory2/')"
+						],
+						"outputs": [],
+						"execution_count": 25
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Test commandas')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "spk33",
+					"type": "BigDataPoolReference"
+				},
+				"sessionProperties": {
+					"driverMemory": "56g",
+					"driverCores": 8,
+					"executorMemory": "56g",
+					"executorCores": 8,
+					"numExecutors": 2,
+					"runAsWorkspaceSystemIdentity": true,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "5cd8761a-acd8-4a69-90e9-a7df726e4c36"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"synapse_widget": {
+						"version": "0.1"
+					},
+					"enableDebugMode": false,
+					"language_info": {
+						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/12a9c9ee-0cbb-4ea3-8995-63a79485e92b/resourceGroups/SynapseRG/providers/Microsoft.Synapse/workspaces/shared-vnet-workspace/bigDataPools/spk33",
+						"name": "spk33",
+						"type": "Spark",
+						"endpoint": "https://shared-vnet-workspace.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/spk33",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net",
+							"authHeader": null
+						},
+						"sparkVersion": "3.3",
+						"nodeCount": 10,
+						"cores": 8,
+						"memory": 56,
+						"extraHeader": null
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"source": [
+							"%pip freeze"
+						],
+						"outputs": [],
+						"execution_count": 1
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"%pip freeze"
+						],
+						"outputs": [],
+						"execution_count": 1
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"pip download azure-storage-file-datalake"
+						],
+						"outputs": [],
+						"execution_count": 1
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"pip download azure-storage-file-datalake"
+						],
+						"outputs": [],
+						"execution_count": 3
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"pip install azure-storage-file-datalake azure-identity"
+						],
+						"outputs": [],
+						"execution_count": 43
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"import os\r\n",
+							"from azure.storage.filedatalake import (\r\n",
+							"    DataLakeServiceClient,\r\n",
+							"    DataLakeDirectoryClient,\r\n",
+							"    FileSystemClient\r\n",
+							")\r\n",
+							"from azure.identity import DefaultAzureCredential,ManagedIdentityCredential"
+						],
+						"outputs": [],
+						"execution_count": 1
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"def get_service_client_token_credential(account_name) -> DataLakeServiceClient:\r\n",
+							"    account_url = f\"https://{account_name}.dfs.core.windows.net\"\r\n",
+							"    os.environ[\"AZURE_TENANT_ID\"] = \"72f988bf-86f1-41af-91ab-2d7cd011db47\"\r\n",
+							"    os.environ[\"AZURE_CLIENT_ID\"] = \"fd666df9-b991-4069-88a0-ccddaa279238\"\r\n",
+							"    os.environ[\"AZURE_CLIENT_SECRET\"] = \"Jp48Q~HLAZIluymtSYenWZ35liO6dblfdH2CrbPZ\"\r\n",
+							"    token_credential = DefaultAzureCredential() #ManagedIdentityCredential(client_id='fd13fb11-af19-48c7-bfe0-a09768c07ba8')  #DefaultAzureCredential() #ManagedIdentityCredential() \r\n",
+							"\r\n",
+							"    service_client = DataLakeServiceClient(account_url, credential=token_credential)\r\n",
+							"\r\n",
+							"    return service_client"
+						],
+						"outputs": [],
+						"execution_count": 63
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"def list_directory_contents(file_system_client: FileSystemClient, directory_name: str):\r\n",
+							"    paths = file_system_client.get_paths(path=directory_name)\r\n",
+							"\r\n",
+							"    for path in paths:\r\n",
+							"        print(path.name + '\\n')"
+						],
+						"outputs": [],
+						"execution_count": 64
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"service_client = get_service_client_token_credential(account_name='sharedvnetworkspace')"
+						],
+						"outputs": [],
+						"execution_count": 65
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"for x in service_client.list_file_systems():\r\n",
+							"  print(x)"
+						],
+						"outputs": [],
+						"execution_count": 66
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"file_system_client = service_client.get_file_system_client(file_system='sharedvnetworkspace')"
+						],
+						"outputs": []
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"list_directory_contents(file_system_client,'synapse')"
+						],
+						"outputs": []
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"%%sh \r\n",
+							"nslookup sharedvnetworkspace.dfs.core.windows.net"
+						],
+						"outputs": [],
+						"execution_count": 6
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							" # Read Parquet files from an ADLS account\r\n",
+							" df = spark.read.format('csv').option(\"header\", \"true\").load(\"abfss://sharedvnetworkspace@sharedvnetworkspace.dfs.core.windows.net/TestRead/\")\r\n",
+							"\r\n",
+							" # Write Delta tables to ADLS account\r\n",
+							" df.write.mode(\"overwrite\").format(\"delta\").save(\"abfss://sharedvnetworkspace@sharedvnetworkspace.dfs.core.windows.net/TestWrite/\")"
+						],
+						"outputs": [],
+						"execution_count": 2
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"from azure.identity import DefaultAzureCredential\r\n",
+							"from azure.storage.blob import BlobServiceClient\r\n",
+							"import os\r\n",
+							" \r\n",
+							"endpoint = 'https://sharedvnetworkspace.blob.core.windows.net/'\r\n",
+							"container_name = 'youseftest'\r\n",
+							" \r\n",
+							"# Use DefaultAzureCredential to authenticate with Managed Identity\r\n",
+							"os.environ[\"AZURE_TENANT_ID\"] = \"72f988bf-86f1-41af-91ab-2d7cd011db47\"\r\n",
+							"os.environ[\"AZURE_CLIENT_ID\"] = \"fd666df9-b991-4069-88a0-ccddaa279238\"\r\n",
+							"os.environ[\"AZURE_CLIENT_SECRET\"] = \"Jp48Q~HLAZIluymtSYenWZ35liO6dblfdH2CrbPZ\"\r\n",
+							"credential = DefaultAzureCredential()\r\n",
+							"#credential = ManagedIdentityCredential()\r\n",
+							" \r\n",
+							"# Create a BlobServiceClient with the credential\r\n",
+							"blob_service_client = BlobServiceClient(account_url=endpoint, credential=credential)\r\n",
+							" \r\n",
+							"# Create a container client\r\n",
+							"blob_container_client = blob_service_client.get_container_client(container_name)\r\n",
+							" \r\n",
+							"print(f'creating container {blob_container_client.container_name} in {blob_container_client.account_name}')\r\n",
+							" \r\n",
+							"blob_container_client.create_container()"
+						],
+						"outputs": [],
+						"execution_count": 7
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"from azure.storage.blob import BlobServiceClient\r\n",
+							"from notebookutils import mssparkutils\r\n",
+							"\r\n",
+							"endpoint = 'https://sharedvnetworkspace.blob.core.windows.net/'\r\n",
+							"container_name = 'youseftestsas'\r\n",
+							"linked_service_name = 'shared-vnet-workspace-WorkspaceDefaultStorage'\r\n",
+							"\r\n",
+							"# Get the connection string from linked service\r\n",
+							"connection_string = mssparkutils.credentials.getFullConnectionString(linked_service_name)\r\n",
+							"\r\n",
+							"# Create a BlobServiceClient from connectio string\r\n",
+							"blob_service_client = BlobServiceClient.from_connection_string(connection_string) #from_connection_string\r\n",
+							"\r\n",
+							"#blob_sas_token = mssparkutils.credentials.getToken(linked_service_name)\r\n",
+							"\r\n",
+							"#blob_service_client = BlobServiceClient(account_url=endpoint, TokenCredential=blob_sas_token)\r\n",
+							"\r\n",
+							"# Create a container client\r\n",
+							"blob_container_client = blob_service_client.get_container_client(container_name)\r\n",
+							"#print(mssparkutils.credentials.getPropertiesAll(linked_service_name))\r\n",
+							"#print(connection_string)\r\n",
+							"\r\n",
+							"#for char in connection_string:\r\n",
+							"#    print(char, end=\" \")\r\n",
+							"\r\n",
+							"print(f'creating container {blob_container_client.container_name} in {blob_container_client.account_name}')\r\n",
+							" \r\n",
+							"blob_container_client.create_container()"
+						],
+						"outputs": [],
+						"execution_count": 2
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"import requests \r\n",
+							"from notebookutils import mssparkutils\r\n",
+							"\r\n",
+							"token_String = mssparkutils.credentials.getToken(\"https://shared-vnet-workspace.dev.azuresynapse.net\")\r\n",
+							"header = {'Content-Type': 'application/json', 'Authorization': f'Bearer {token_String}'}\r\n",
+							"response = requests.get(url='https://shared-vnet-workspace.dev.azuresynapse.net/notebooks/Test_Custom_Log?api-version=2020-12-01', headers = header)\r\n",
+							"print(response)\r\n",
+							"print(response.text)"
+						],
+						"outputs": [],
+						"execution_count": 1
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"from azure.identity import ClientSecretCredential\r\n",
+							"import requests\r\n",
+							"\r\n",
+							"tenant_id = '72f988bf-86f1-41af-91ab-2d7cd011db47'\r\n",
+							"client_id = 'fd666df9-b991-4069-88a0-ccddaa279238'\r\n",
+							"client_secret = 'Jp48Q~HLAZIluymtSYenWZ35liO6dblfdH2CrbPZ'\r\n",
+							"scope = 'https://shared-vnet-workspace.dev.azuresynapse.net'\r\n",
+							"client_secret_credential_class = ClientSecretCredential(tenant_id=tenant_id, client_id=client_id, client_secret=client_secret)\r\n",
+							"access_token_class = client_secret_credential_class.get_token(scope)\r\n",
+							"token_string = access_token_class.token\r\n",
+							"\r\n",
+							"header = {'Content-Type':'application/json','Authorization': f'Bearer {token_string}'}\r\n",
+							"response = requests.get(url='https://shared-vnet-workspace.dev.azuresynapse.net/notebooks/Test_Custom_Log?api-version=2020-12-01', headers=header)"
+						],
+						"outputs": [],
+						"execution_count": 2
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"mark down cell "
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"tags": [
+								"parameters"
+							]
+						},
+						"source": [
+							"tenant_id = '72f988bf-86f1-41af-91ab-2d7cd011db47'\r\n",
+							"client_id = 'fd666df9-b991-4069-88a0-ccddaa279238'\r\n",
+							"client_secret = 'Jp48Q~HLAZIluymtSYenWZ35liO6dblfdH2CrbPZ'\r\n",
+							"scope = 'https://shared-vnet-workspace.dev.azuresynapse.net'\r\n",
+							"client_secret_credential_class = ClientSecretCredential(tenant_id=tenant_id, client_id=client_id, client_secret=client_secret)\r\n",
+							"access_token_class = client_secret_credential_class.get_token(scope)\r\n",
+							"token_string = access_token_class.token"
+						],
+						"outputs": []
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Test_Custom_Log')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "spk33",
+					"type": "BigDataPoolReference"
+				},
+				"sessionProperties": {
+					"driverMemory": "56g",
+					"driverCores": 8,
+					"executorMemory": "56g",
+					"executorCores": 8,
+					"numExecutors": 2,
+					"runAsWorkspaceSystemIdentity": false,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "f899247a-fe89-4d89-b10f-6762a5503ce5"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"synapse_widget": {
+						"version": "0.1"
+					},
+					"enableDebugMode": false,
+					"language_info": {
+						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/12a9c9ee-0cbb-4ea3-8995-63a79485e92b/resourceGroups/SynapseRG/providers/Microsoft.Synapse/workspaces/shared-vnet-workspace/bigDataPools/spk33",
+						"name": "spk33",
+						"type": "Spark",
+						"endpoint": "https://shared-vnet-workspace.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/spk33",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net",
+							"authHeader": null
+						},
+						"sparkVersion": "3.3",
+						"nodeCount": 10,
+						"cores": 8,
+						"memory": 56,
+						"extraHeader": null
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"import logging  \r\n",
+							"      \r\n",
+							"# Customize the logging format for all loggers  \r\n",
+							"FORMAT = \"%(asctime)s - %(name)s - %(levelname)s - %(message)s\"  \r\n",
+							"formatter = logging.Formatter(fmt=FORMAT)  \r\n",
+							"for handler in logging.getLogger().handlers:  \r\n",
+							"    handler.setFormatter(formatter)  \r\n",
+							"      \r\n",
+							"# Customize log level for all loggers  \r\n",
+							"logging.getLogger().setLevel(logging.INFO)  \r\n",
+							"      \r\n",
+							"# Customize the log level for a specific logger  \r\n",
+							"customizedLogger = logging.getLogger('customized')  \r\n",
+							"customizedLogger.setLevel(logging.WARNING)\r\n",
+							"\r\n",
+							" # logger that use the default global log level  \r\n",
+							"defaultLogger = logging.getLogger('default') "
+						],
+						"outputs": [],
+						"execution_count": 6
+					},
+					{
+						"cell_type": "code",
+						"source": [
+							"pip install azure-storage-file-datalake azure-identity"
+						],
+						"outputs": [],
+						"execution_count": 9
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"import os\r\n",
+							"from azure.storage.filedatalake import (\r\n",
+							"    DataLakeServiceClient,\r\n",
+							"    DataLakeDirectoryClient,\r\n",
+							"    FileSystemClient\r\n",
+							")\r\n",
+							"from azure.identity import DefaultAzureCredential,ManagedIdentityCredential\r\n",
+							"\r\n",
+							"defaultLogger.info(\"Import packages successfully\")  "
+						],
+						"outputs": [],
+						"execution_count": 10
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"def get_service_client_token_credential(account_name) -> DataLakeServiceClient:\r\n",
+							"    account_url = f\"https://{account_name}.dfs.core.windows.net\"\r\n",
+							"    os.environ[\"AZURE_TENANT_ID\"] = \"72f988bf-86f1-41af-91ab-2d7cd011db47\"\r\n",
+							"    os.environ[\"AZURE_CLIENT_ID\"] = \"fd666df9-b991-4069-88a0-ccddaa279238\"\r\n",
+							"    os.environ[\"AZURE_CLIENT_SECRET\"] = \"Jp48Q~HLAZIluymtSYenWZ35liO6dblfdH2CrbPZ\"\r\n",
+							"    token_credential = DefaultAzureCredential() #ManagedIdentityCredential(client_id='fd13fb11-af19-48c7-bfe0-a09768c07ba8')  #DefaultAzureCredential() #ManagedIdentityCredential() \r\n",
+							"\r\n",
+							"    service_client = DataLakeServiceClient(account_url, credential=token_credential)\r\n",
+							"\r\n",
+							"    return service_client"
+						],
+						"outputs": [],
+						"execution_count": 11
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"def list_directory_contents(file_system_client: FileSystemClient, directory_name: str):\r\n",
+							"    paths = file_system_client.get_paths(path=directory_name)\r\n",
+							"\r\n",
+							"    for path in paths:\r\n",
+							"        print(path.name + '\\n')\r\n",
+							"        defaultLogger.info(path.name + '\\n')  "
+						],
+						"outputs": [],
+						"execution_count": 13
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"service_client = get_service_client_token_credential(account_name='sharedvnetworkspace')"
+						],
+						"outputs": [],
+						"execution_count": 14
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"for x in service_client.list_file_systems():\r\n",
+							"  print(x)\r\n",
+							"  defaultLogger.info(x)"
+						],
+						"outputs": [],
+						"execution_count": 17
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/spark_stream_css_test')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "spk32",
+					"type": "BigDataPoolReference"
+				},
+				"sessionProperties": {
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 2,
+					"runAsWorkspaceSystemIdentity": false,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "9c79f66f-753d-4078-83ea-0df7ddd75119"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"synapse_widget": {
+						"version": "0.1"
+					},
+					"enableDebugMode": false,
+					"language_info": {
+						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/12a9c9ee-0cbb-4ea3-8995-63a79485e92b/resourceGroups/SynapseRG/providers/Microsoft.Synapse/workspaces/shared-vnet-workspace/bigDataPools/spk32",
+						"name": "spk32",
+						"type": "Spark",
+						"endpoint": "https://shared-vnet-workspace.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/spk32",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net",
+							"authHeader": null
+						},
+						"sparkVersion": "3.2",
+						"nodeCount": 10,
+						"cores": 4,
+						"memory": 28,
+						"extraHeader": null
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"source": [
+							"from pyspark.sql.types import StructType, IntegerType, StringType, DateType\r\n",
+							"\r\n",
+							"customSchema = StructType() \\\r\n",
+							"     .add(\"PID\", IntegerType(), True) \\\r\n",
+							"     .add(\"Name\", StringType(), True) \\\r\n",
+							"     .add(\"DID\", IntegerType(), True) \\\r\n",
+							"     .add(\"DName\", StringType(), True) \\\r\n",
+							"     .add(\"VisitDate\", DateType(), True)"
+						],
+						"outputs": [],
+						"execution_count": 2
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"import pandas as pd\r\n",
+							"from datetime import date, datetime, timedelta"
+						],
+						"outputs": [],
+						"execution_count": 3
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							" dfPatients = spark \\\r\n",
+							"     .readStream \\\r\n",
+							"     .format(\"csv\") \\\r\n",
+							"     .option(\"header\",True) \\\r\n",
+							"     .option(\"path\",\"abfss://sharedvnetworkspace@sharedvnetworkspace.dfs.core.windows.net/TestRead/\") \\\r\n",
+							"     .schema(customSchema) \\\r\n",
+							"     .load()\r\n",
+							"\r\n",
+							"     ##patients_visit_data.csv"
+						],
+						"outputs": [],
+						"execution_count": 4
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"def append_df_to_file(df, logging_file_system:str = 'logs' , logging_storageacc:str = 'euwestoracc04', environment:str = 'staging', business_unit:str = 'pipelife', layer:str = 'caching', name_prefix:str = '_deltalake_', business_item:str = ''):\r\n",
+							"  str_date = datetime.now().strftime('%Y-%m-%d')\r\n",
+							"  #print(f'abfss://{logging_file_system}@{logging_storageacc}.dfs.core.windows.net/{environment}/{business_unit}/{layer}/{str_date}{name_prefix}{business_item}.log')\r\n",
+							"  df.to_csv(f'abfss://sharedvnetworkspace@sharedvnetworkspace.dfs.core.windows.net/{environment}/{business_unit}/{layer}/{str_date}{name_prefix}{business_item}.log', sep=';', index=False, mode='a', header=False)    "
+						],
+						"outputs": [],
+						"execution_count": 5
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"def create_log_df(df):  \r\n",
+							"    df['modify_dts'] = datetime.utcnow().isoformat()\r\n",
+							"    df['submitter_id'] = mssparkutils.env.getUserId()\r\n",
+							"    df['spark_pool'] = mssparkutils.env.getPoolName()\r\n",
+							"    df['livy_id'] = mssparkutils.env.getJobId()\r\n",
+							"    df = df[['modify_dts', 'submitter_id', 'spark_pool', 'livy_id', 'severity', 'msg']]\r\n",
+							"    return df"
+						],
+						"outputs": [],
+						"execution_count": 6
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"def merge_batch_to_Silver(microdf, batchId):\r\n",
+							"    print(f'Number of rows in batch: {microdf.count()}')\r\n",
+							"    df = pd.DataFrame([{'msg':f'WARNING: There are 0 duplicates for 1 where bi_timestamp, load_dts and filename are the same but values are different.','severity':'ERROR'}])\r\n",
+							"    print(\"Create log df\")\r\n",
+							"    df = create_log_df(df)\r\n",
+							"    print(\"append df to file\")\r\n",
+							"    append_df_to_file(df, 'logs', 'euwestoracc04', 'staging', 'pipelife', 'caching', '_deltalake_mii_delta')"
+						],
+						"outputs": [],
+						"execution_count": 7
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"streamQuery = (dfPatients \\\r\n",
+							"            .writeStream \\\r\n",
+							"            .format('delta') \\\r\n",
+							"            .outputMode('append') \\\r\n",
+							"            .foreachBatch(lambda microdf, batchId: merge_batch_to_Silver(microdf, batchId)) \\\r\n",
+							"#            .option('checkpointLocation',f'https://case001an.dfs.core.windows.net/case001fsn/checkpoint') \\\r\n",
+							"            .trigger(once=True) \\\r\n",
+							"            .start()\r\n",
+							"               )\r\n",
+							"\r\n",
+							"streamQuery.awaitTermination() "
+						],
+						"outputs": [],
+						"execution_count": 8
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/test1')]",
+			"type": "Microsoft.Synapse/workspaces/sqlPools",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"collation": "SQL_Latin1_General_CP1_CI_AS",
+				"maxSizeBytes": 263882790666240,
+				"annotations": []
+			},
+			"dependsOn": [],
+			"location": "westeurope"
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/spk32')]",
+			"type": "Microsoft.Synapse/workspaces/bigDataPools",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"autoPause": {
+					"enabled": true,
+					"delayInMinutes": 10
+				},
+				"autoScale": {
+					"enabled": true,
+					"maxNodeCount": 3,
+					"minNodeCount": 3
+				},
+				"nodeCount": 10,
+				"nodeSize": "Small",
+				"nodeSizeFamily": "MemoryOptimized",
+				"sparkVersion": "3.2",
+				"libraryRequirements": {
+					"content": "pandas==1.5.2\r\nfsspec==2021.7.0",
+					"filename": "requirements_pandas_1.5.2.txt",
+					"time": "2023-07-27T09:46:44.3767096Z"
+				},
+				"isComputeIsolationEnabled": false,
+				"sessionLevelPackagesEnabled": false,
+				"customLibraries": [
+					{
+						"name": "azure_identity-1.12.0-py3-none-any.whl",
+						"path": "shared-vnet-workspace/libraries/azure_identity-1.12.0-py3-none-any.whl",
+						"containerName": "prep",
+						"uploadedTimestamp": "0001-01-01T00:00:00+00:00",
+						"type": "whl"
+					},
+					{
+						"name": "great_expectations-0.16.8-py3-none-any.whl",
+						"path": "shared-vnet-workspace/libraries/great_expectations-0.16.8-py3-none-any.whl",
+						"containerName": "prep",
+						"uploadedTimestamp": "0001-01-01T00:00:00+00:00",
+						"type": "whl"
+					},
+					{
+						"name": "azure_storage_file_datalake-12.5.0-py2.py3-none-any.whl",
+						"path": "shared-vnet-workspace/libraries/azure_storage_file_datalake-12.5.0-py2.py3-none-any.whl",
+						"containerName": "prep",
+						"uploadedTimestamp": "0001-01-01T00:00:00+00:00",
+						"type": "whl"
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [],
+			"location": "westeurope"
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/spk33')]",
+			"type": "Microsoft.Synapse/workspaces/bigDataPools",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"autoPause": {
+					"enabled": true,
+					"delayInMinutes": 15
+				},
+				"autoScale": {
+					"enabled": true,
+					"maxNodeCount": 3,
+					"minNodeCount": 3
+				},
+				"nodeCount": 10,
+				"nodeSize": "Medium",
+				"nodeSizeFamily": "MemoryOptimized",
+				"sparkVersion": "3.3",
+				"isComputeIsolationEnabled": false,
+				"sessionLevelPackagesEnabled": false,
+				"annotations": []
+			},
+			"dependsOn": [],
+			"location": "westeurope"
+		}
+	]
+}
