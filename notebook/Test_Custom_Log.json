@@ -1,0 +1,209 @@
+{
+	"name": "Test_Custom_Log",
+	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "spk33",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "56g",
+			"driverCores": 8,
+			"executorMemory": "56g",
+			"executorCores": 8,
+			"numExecutors": 2,
+			"runAsWorkspaceSystemIdentity": false,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "f899247a-fe89-4d89-b10f-6762a5503ce5"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"synapse_widget": {
+				"version": "0.1"
+			},
+			"enableDebugMode": false,
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/12a9c9ee-0cbb-4ea3-8995-63a79485e92b/resourceGroups/SynapseRG/providers/Microsoft.Synapse/workspaces/shared-vnet-workspace/bigDataPools/spk33",
+				"name": "spk33",
+				"type": "Spark",
+				"endpoint": "https://shared-vnet-workspace.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/spk33",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net",
+					"authHeader": null
+				},
+				"sparkVersion": "3.3",
+				"nodeCount": 10,
+				"cores": 8,
+				"memory": 56,
+				"extraHeader": null
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"import logging  \r\n",
+					"      \r\n",
+					"# Customize the logging format for all loggers  \r\n",
+					"FORMAT = \"%(asctime)s - %(name)s - %(levelname)s - %(message)s\"  \r\n",
+					"formatter = logging.Formatter(fmt=FORMAT)  \r\n",
+					"for handler in logging.getLogger().handlers:  \r\n",
+					"    handler.setFormatter(formatter)  \r\n",
+					"      \r\n",
+					"# Customize log level for all loggers  \r\n",
+					"logging.getLogger().setLevel(logging.INFO)  \r\n",
+					"      \r\n",
+					"# Customize the log level for a specific logger  \r\n",
+					"customizedLogger = logging.getLogger('customized')  \r\n",
+					"customizedLogger.setLevel(logging.WARNING)\r\n",
+					"\r\n",
+					" # logger that use the default global log level  \r\n",
+					"defaultLogger = logging.getLogger('default') "
+				],
+				"execution_count": 6
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"pip install azure-storage-file-datalake azure-identity"
+				],
+				"execution_count": 9
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"import os\r\n",
+					"from azure.storage.filedatalake import (\r\n",
+					"    DataLakeServiceClient,\r\n",
+					"    DataLakeDirectoryClient,\r\n",
+					"    FileSystemClient\r\n",
+					")\r\n",
+					"from azure.identity import DefaultAzureCredential,ManagedIdentityCredential\r\n",
+					"\r\n",
+					"defaultLogger.info(\"Import packages successfully\")  "
+				],
+				"execution_count": 10
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"def get_service_client_token_credential(account_name) -> DataLakeServiceClient:\r\n",
+					"    account_url = f\"https://{account_name}.dfs.core.windows.net\"\r\n",
+					"    os.environ[\"AZURE_TENANT_ID\"] = \"72f988bf-86f1-41af-91ab-2d7cd011db47\"\r\n",
+					"    os.environ[\"AZURE_CLIENT_ID\"] = \"fd666df9-b991-4069-88a0-ccddaa279238\"\r\n",
+					"    os.environ[\"AZURE_CLIENT_SECRET\"] = \"Jp48Q~HLAZIluymtSYenWZ35liO6dblfdH2CrbPZ\"\r\n",
+					"    token_credential = DefaultAzureCredential() #ManagedIdentityCredential(client_id='fd13fb11-af19-48c7-bfe0-a09768c07ba8')  #DefaultAzureCredential() #ManagedIdentityCredential() \r\n",
+					"\r\n",
+					"    service_client = DataLakeServiceClient(account_url, credential=token_credential)\r\n",
+					"\r\n",
+					"    return service_client"
+				],
+				"execution_count": 11
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"def list_directory_contents(file_system_client: FileSystemClient, directory_name: str):\r\n",
+					"    paths = file_system_client.get_paths(path=directory_name)\r\n",
+					"\r\n",
+					"    for path in paths:\r\n",
+					"        print(path.name + '\\n')\r\n",
+					"        defaultLogger.info(path.name + '\\n')  "
+				],
+				"execution_count": 13
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"service_client = get_service_client_token_credential(account_name='sharedvnetworkspace')"
+				],
+				"execution_count": 14
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"for x in service_client.list_file_systems():\r\n",
+					"  print(x)\r\n",
+					"  defaultLogger.info(x)"
+				],
+				"execution_count": 17
+			}
+		]
+	}
+}

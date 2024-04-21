@@ -1,0 +1,209 @@
+{
+	"name": "Notebook_test2",
+	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "spk32",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 2,
+			"runAsWorkspaceSystemIdentity": false,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "b7a0cadd-ad9a-45b2-a9c2-2ef1ff04a456"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"synapse_widget": {
+				"version": "0.1",
+				"state": {
+					"c40ce1f5-ba74-46d2-b5bf-22e897aa73ce": {
+						"type": "Synapse.DataFrame",
+						"sync_state": {
+							"table": {
+								"rows": [
+									{
+										"0": "2984641",
+										"1": "Emily",
+										"2": "35",
+										"3": "cardio",
+										"4": "01.09.2021"
+									},
+									{
+										"0": "9454384",
+										"1": "Riikka",
+										"2": "86",
+										"3": "ortho",
+										"4": "21.07.2021"
+									},
+									{
+										"0": "9266396",
+										"1": "Fanny",
+										"2": "86",
+										"3": "ortho",
+										"4": "03.06.2021"
+									},
+									{
+										"0": "5247541",
+										"1": "Urooj",
+										"2": "35",
+										"3": "cardio",
+										"4": "21.08.2021"
+									}
+								],
+								"schema": [
+									{
+										"key": "0",
+										"name": "PID",
+										"type": "string"
+									},
+									{
+										"key": "1",
+										"name": "Name",
+										"type": "string"
+									},
+									{
+										"key": "2",
+										"name": "DID",
+										"type": "string"
+									},
+									{
+										"key": "3",
+										"name": "DName",
+										"type": "string"
+									},
+									{
+										"key": "4",
+										"name": "VisitDate",
+										"type": "string"
+									}
+								],
+								"truncated": false
+							},
+							"isSummary": false,
+							"language": "scala"
+						},
+						"persist_state": {
+							"view": {
+								"type": "details",
+								"chartOptions": {
+									"chartType": "bar",
+									"aggregationType": "count",
+									"categoryFieldKeys": [
+										"0"
+									],
+									"seriesFieldKeys": [
+										"0"
+									],
+									"isStacked": false
+								}
+							}
+						}
+					}
+				}
+			},
+			"enableDebugMode": false,
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/12a9c9ee-0cbb-4ea3-8995-63a79485e92b/resourceGroups/SynapseRG/providers/Microsoft.Synapse/workspaces/shared-vnet-workspace/bigDataPools/spk32",
+				"name": "spk32",
+				"type": "Spark",
+				"endpoint": "https://shared-vnet-workspace.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/spk32",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net",
+					"authHeader": null
+				},
+				"sparkVersion": "3.2",
+				"nodeCount": 10,
+				"cores": 4,
+				"memory": 28,
+				"extraHeader": null
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"metadata": {
+					"collapsed": false
+				},
+				"source": [
+					"df = spark.read.load('abfss://sharedvnetworkspace@sharedvnetworkspace.dfs.core.windows.net/TestRead/patients_visit_data_css_test.csv', format='csv'\r\n",
+					"## If header exists uncomment line below\r\n",
+					", header=True\r\n",
+					")\r\n",
+					"display(df.limit(10))"
+				],
+				"execution_count": 20
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"df.printSchema()"
+				],
+				"execution_count": 21
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"df.createOrReplaceTempView(\"test_view_1\")"
+				],
+				"execution_count": 22
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"source_df = spark.sql(\"select * from test_view_1\")\r\n",
+					"\r\n",
+					"source_df.write.format('csv').option(\"header\",True).save('abfss://sharedvnetworkspace@sharedvnetworkspace.dfs.core.windows.net/TestDirectory2/')"
+				],
+				"execution_count": 25
+			}
+		]
+	}
+}

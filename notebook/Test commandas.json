@@ -1,0 +1,497 @@
+{
+	"name": "Test commandas",
+	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "spk33",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "56g",
+			"driverCores": 8,
+			"executorMemory": "56g",
+			"executorCores": 8,
+			"numExecutors": 2,
+			"runAsWorkspaceSystemIdentity": true,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "5cd8761a-acd8-4a69-90e9-a7df726e4c36"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"synapse_widget": {
+				"version": "0.1"
+			},
+			"enableDebugMode": false,
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/12a9c9ee-0cbb-4ea3-8995-63a79485e92b/resourceGroups/SynapseRG/providers/Microsoft.Synapse/workspaces/shared-vnet-workspace/bigDataPools/spk33",
+				"name": "spk33",
+				"type": "Spark",
+				"endpoint": "https://shared-vnet-workspace.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/spk33",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net",
+					"authHeader": null
+				},
+				"sparkVersion": "3.3",
+				"nodeCount": 10,
+				"cores": 8,
+				"memory": 56,
+				"extraHeader": null
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"source": [
+					"%pip freeze"
+				],
+				"execution_count": 1
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"%pip freeze"
+				],
+				"execution_count": 1
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"pip download azure-storage-file-datalake"
+				],
+				"execution_count": 1
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"pip download azure-storage-file-datalake"
+				],
+				"execution_count": 3
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"pip install azure-storage-file-datalake azure-identity"
+				],
+				"execution_count": 43
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"import os\r\n",
+					"from azure.storage.filedatalake import (\r\n",
+					"    DataLakeServiceClient,\r\n",
+					"    DataLakeDirectoryClient,\r\n",
+					"    FileSystemClient\r\n",
+					")\r\n",
+					"from azure.identity import DefaultAzureCredential,ManagedIdentityCredential"
+				],
+				"execution_count": 1
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"def get_service_client_token_credential(account_name) -> DataLakeServiceClient:\r\n",
+					"    account_url = f\"https://{account_name}.dfs.core.windows.net\"\r\n",
+					"    os.environ[\"AZURE_TENANT_ID\"] = \"72f988bf-86f1-41af-91ab-2d7cd011db47\"\r\n",
+					"    os.environ[\"AZURE_CLIENT_ID\"] = \"fd666df9-b991-4069-88a0-ccddaa279238\"\r\n",
+					"    os.environ[\"AZURE_CLIENT_SECRET\"] = \"Jp48Q~HLAZIluymtSYenWZ35liO6dblfdH2CrbPZ\"\r\n",
+					"    token_credential = DefaultAzureCredential() #ManagedIdentityCredential(client_id='fd13fb11-af19-48c7-bfe0-a09768c07ba8')  #DefaultAzureCredential() #ManagedIdentityCredential() \r\n",
+					"\r\n",
+					"    service_client = DataLakeServiceClient(account_url, credential=token_credential)\r\n",
+					"\r\n",
+					"    return service_client"
+				],
+				"execution_count": 63
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"def list_directory_contents(file_system_client: FileSystemClient, directory_name: str):\r\n",
+					"    paths = file_system_client.get_paths(path=directory_name)\r\n",
+					"\r\n",
+					"    for path in paths:\r\n",
+					"        print(path.name + '\\n')"
+				],
+				"execution_count": 64
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"service_client = get_service_client_token_credential(account_name='sharedvnetworkspace')"
+				],
+				"execution_count": 65
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"for x in service_client.list_file_systems():\r\n",
+					"  print(x)"
+				],
+				"execution_count": 66
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"file_system_client = service_client.get_file_system_client(file_system='sharedvnetworkspace')"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"list_directory_contents(file_system_client,'synapse')"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"%%sh \r\n",
+					"nslookup sharedvnetworkspace.dfs.core.windows.net"
+				],
+				"execution_count": 6
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					" # Read Parquet files from an ADLS account\r\n",
+					" df = spark.read.format('csv').option(\"header\", \"true\").load(\"abfss://sharedvnetworkspace@sharedvnetworkspace.dfs.core.windows.net/TestRead/\")\r\n",
+					"\r\n",
+					" # Write Delta tables to ADLS account\r\n",
+					" df.write.mode(\"overwrite\").format(\"delta\").save(\"abfss://sharedvnetworkspace@sharedvnetworkspace.dfs.core.windows.net/TestWrite/\")"
+				],
+				"execution_count": 2
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"from azure.identity import DefaultAzureCredential\r\n",
+					"from azure.storage.blob import BlobServiceClient\r\n",
+					"import os\r\n",
+					" \r\n",
+					"endpoint = 'https://sharedvnetworkspace.blob.core.windows.net/'\r\n",
+					"container_name = 'youseftest'\r\n",
+					" \r\n",
+					"# Use DefaultAzureCredential to authenticate with Managed Identity\r\n",
+					"os.environ[\"AZURE_TENANT_ID\"] = \"72f988bf-86f1-41af-91ab-2d7cd011db47\"\r\n",
+					"os.environ[\"AZURE_CLIENT_ID\"] = \"fd666df9-b991-4069-88a0-ccddaa279238\"\r\n",
+					"os.environ[\"AZURE_CLIENT_SECRET\"] = \"Jp48Q~HLAZIluymtSYenWZ35liO6dblfdH2CrbPZ\"\r\n",
+					"credential = DefaultAzureCredential()\r\n",
+					"#credential = ManagedIdentityCredential()\r\n",
+					" \r\n",
+					"# Create a BlobServiceClient with the credential\r\n",
+					"blob_service_client = BlobServiceClient(account_url=endpoint, credential=credential)\r\n",
+					" \r\n",
+					"# Create a container client\r\n",
+					"blob_container_client = blob_service_client.get_container_client(container_name)\r\n",
+					" \r\n",
+					"print(f'creating container {blob_container_client.container_name} in {blob_container_client.account_name}')\r\n",
+					" \r\n",
+					"blob_container_client.create_container()"
+				],
+				"execution_count": 7
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"from azure.storage.blob import BlobServiceClient\r\n",
+					"from notebookutils import mssparkutils\r\n",
+					"\r\n",
+					"endpoint = 'https://sharedvnetworkspace.blob.core.windows.net/'\r\n",
+					"container_name = 'youseftestsas'\r\n",
+					"linked_service_name = 'shared-vnet-workspace-WorkspaceDefaultStorage'\r\n",
+					"\r\n",
+					"# Get the connection string from linked service\r\n",
+					"connection_string = mssparkutils.credentials.getFullConnectionString(linked_service_name)\r\n",
+					"\r\n",
+					"# Create a BlobServiceClient from connectio string\r\n",
+					"blob_service_client = BlobServiceClient.from_connection_string(connection_string) #from_connection_string\r\n",
+					"\r\n",
+					"#blob_sas_token = mssparkutils.credentials.getToken(linked_service_name)\r\n",
+					"\r\n",
+					"#blob_service_client = BlobServiceClient(account_url=endpoint, TokenCredential=blob_sas_token)\r\n",
+					"\r\n",
+					"# Create a container client\r\n",
+					"blob_container_client = blob_service_client.get_container_client(container_name)\r\n",
+					"#print(mssparkutils.credentials.getPropertiesAll(linked_service_name))\r\n",
+					"#print(connection_string)\r\n",
+					"\r\n",
+					"#for char in connection_string:\r\n",
+					"#    print(char, end=\" \")\r\n",
+					"\r\n",
+					"print(f'creating container {blob_container_client.container_name} in {blob_container_client.account_name}')\r\n",
+					" \r\n",
+					"blob_container_client.create_container()"
+				],
+				"execution_count": 2
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"import requests \r\n",
+					"from notebookutils import mssparkutils\r\n",
+					"\r\n",
+					"token_String = mssparkutils.credentials.getToken(\"https://shared-vnet-workspace.dev.azuresynapse.net\")\r\n",
+					"header = {'Content-Type': 'application/json', 'Authorization': f'Bearer {token_String}'}\r\n",
+					"response = requests.get(url='https://shared-vnet-workspace.dev.azuresynapse.net/notebooks/Test_Custom_Log?api-version=2020-12-01', headers = header)\r\n",
+					"print(response)\r\n",
+					"print(response.text)"
+				],
+				"execution_count": 1
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"from azure.identity import ClientSecretCredential\r\n",
+					"import requests\r\n",
+					"\r\n",
+					"tenant_id = '72f988bf-86f1-41af-91ab-2d7cd011db47'\r\n",
+					"client_id = 'fd666df9-b991-4069-88a0-ccddaa279238'\r\n",
+					"client_secret = 'Jp48Q~HLAZIluymtSYenWZ35liO6dblfdH2CrbPZ'\r\n",
+					"scope = 'https://shared-vnet-workspace.dev.azuresynapse.net'\r\n",
+					"client_secret_credential_class = ClientSecretCredential(tenant_id=tenant_id, client_id=client_id, client_secret=client_secret)\r\n",
+					"access_token_class = client_secret_credential_class.get_token(scope)\r\n",
+					"token_string = access_token_class.token\r\n",
+					"\r\n",
+					"header = {'Content-Type':'application/json','Authorization': f'Bearer {token_string}'}\r\n",
+					"response = requests.get(url='https://shared-vnet-workspace.dev.azuresynapse.net/notebooks/Test_Custom_Log?api-version=2020-12-01', headers=header)"
+				],
+				"execution_count": 2
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"mark down cell "
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"tags": [
+						"parameters"
+					]
+				},
+				"source": [
+					"tenant_id = '72f988bf-86f1-41af-91ab-2d7cd011db47'\r\n",
+					"client_id = 'fd666df9-b991-4069-88a0-ccddaa279238'\r\n",
+					"client_secret = 'Jp48Q~HLAZIluymtSYenWZ35liO6dblfdH2CrbPZ'\r\n",
+					"scope = 'https://shared-vnet-workspace.dev.azuresynapse.net'\r\n",
+					"client_secret_credential_class = ClientSecretCredential(tenant_id=tenant_id, client_id=client_id, client_secret=client_secret)\r\n",
+					"access_token_class = client_secret_credential_class.get_token(scope)\r\n",
+					"token_string = access_token_class.token"
+				]
+			}
+		]
+	}
+}

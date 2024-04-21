@@ -1,0 +1,210 @@
+{
+	"name": "spark_stream_css_test",
+	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "spk32",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 2,
+			"runAsWorkspaceSystemIdentity": false,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "9c79f66f-753d-4078-83ea-0df7ddd75119"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"synapse_widget": {
+				"version": "0.1"
+			},
+			"enableDebugMode": false,
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/12a9c9ee-0cbb-4ea3-8995-63a79485e92b/resourceGroups/SynapseRG/providers/Microsoft.Synapse/workspaces/shared-vnet-workspace/bigDataPools/spk32",
+				"name": "spk32",
+				"type": "Spark",
+				"endpoint": "https://shared-vnet-workspace.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/spk32",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net",
+					"authHeader": null
+				},
+				"sparkVersion": "3.2",
+				"nodeCount": 10,
+				"cores": 4,
+				"memory": 28,
+				"extraHeader": null
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"source": [
+					"from pyspark.sql.types import StructType, IntegerType, StringType, DateType\r\n",
+					"\r\n",
+					"customSchema = StructType() \\\r\n",
+					"     .add(\"PID\", IntegerType(), True) \\\r\n",
+					"     .add(\"Name\", StringType(), True) \\\r\n",
+					"     .add(\"DID\", IntegerType(), True) \\\r\n",
+					"     .add(\"DName\", StringType(), True) \\\r\n",
+					"     .add(\"VisitDate\", DateType(), True)"
+				],
+				"execution_count": 2
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"import pandas as pd\r\n",
+					"from datetime import date, datetime, timedelta"
+				],
+				"execution_count": 3
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					" dfPatients = spark \\\r\n",
+					"     .readStream \\\r\n",
+					"     .format(\"csv\") \\\r\n",
+					"     .option(\"header\",True) \\\r\n",
+					"     .option(\"path\",\"abfss://sharedvnetworkspace@sharedvnetworkspace.dfs.core.windows.net/TestRead/\") \\\r\n",
+					"     .schema(customSchema) \\\r\n",
+					"     .load()\r\n",
+					"\r\n",
+					"     ##patients_visit_data.csv"
+				],
+				"execution_count": 4
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"def append_df_to_file(df, logging_file_system:str = 'logs' , logging_storageacc:str = 'euwestoracc04', environment:str = 'staging', business_unit:str = 'pipelife', layer:str = 'caching', name_prefix:str = '_deltalake_', business_item:str = ''):\r\n",
+					"  str_date = datetime.now().strftime('%Y-%m-%d')\r\n",
+					"  #print(f'abfss://{logging_file_system}@{logging_storageacc}.dfs.core.windows.net/{environment}/{business_unit}/{layer}/{str_date}{name_prefix}{business_item}.log')\r\n",
+					"  df.to_csv(f'abfss://sharedvnetworkspace@sharedvnetworkspace.dfs.core.windows.net/{environment}/{business_unit}/{layer}/{str_date}{name_prefix}{business_item}.log', sep=';', index=False, mode='a', header=False)    "
+				],
+				"execution_count": 5
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"def create_log_df(df):  \r\n",
+					"    df['modify_dts'] = datetime.utcnow().isoformat()\r\n",
+					"    df['submitter_id'] = mssparkutils.env.getUserId()\r\n",
+					"    df['spark_pool'] = mssparkutils.env.getPoolName()\r\n",
+					"    df['livy_id'] = mssparkutils.env.getJobId()\r\n",
+					"    df = df[['modify_dts', 'submitter_id', 'spark_pool', 'livy_id', 'severity', 'msg']]\r\n",
+					"    return df"
+				],
+				"execution_count": 6
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"def merge_batch_to_Silver(microdf, batchId):\r\n",
+					"    print(f'Number of rows in batch: {microdf.count()}')\r\n",
+					"    df = pd.DataFrame([{'msg':f'WARNING: There are 0 duplicates for 1 where bi_timestamp, load_dts and filename are the same but values are different.','severity':'ERROR'}])\r\n",
+					"    print(\"Create log df\")\r\n",
+					"    df = create_log_df(df)\r\n",
+					"    print(\"append df to file\")\r\n",
+					"    append_df_to_file(df, 'logs', 'euwestoracc04', 'staging', 'pipelife', 'caching', '_deltalake_mii_delta')"
+				],
+				"execution_count": 7
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"streamQuery = (dfPatients \\\r\n",
+					"            .writeStream \\\r\n",
+					"            .format('delta') \\\r\n",
+					"            .outputMode('append') \\\r\n",
+					"            .foreachBatch(lambda microdf, batchId: merge_batch_to_Silver(microdf, batchId)) \\\r\n",
+					"#            .option('checkpointLocation',f'https://case001an.dfs.core.windows.net/case001fsn/checkpoint') \\\r\n",
+					"            .trigger(once=True) \\\r\n",
+					"            .start()\r\n",
+					"               )\r\n",
+					"\r\n",
+					"streamQuery.awaitTermination() "
+				],
+				"execution_count": 8
+			}
+		]
+	}
+}
