@@ -4,385 +4,47 @@
 		"nbformat": 4,
 		"nbformat_minor": 2,
 		"bigDataPool": {
-			"referenceName": "spk32",
+			"referenceName": "spk33",
 			"type": "BigDataPoolReference"
 		},
 		"sessionProperties": {
-			"driverMemory": "28g",
-			"driverCores": 4,
-			"executorMemory": "28g",
-			"executorCores": 4,
+			"driverMemory": "56g",
+			"driverCores": 8,
+			"executorMemory": "56g",
+			"executorCores": 8,
 			"numExecutors": 2,
 			"runAsWorkspaceSystemIdentity": false,
 			"conf": {
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "bd363ee6-c6fc-4e5e-838b-ce5ac65623e4"
+				"spark.autotune.trackingId": "f04ca3c1-5b5a-45fe-b3f6-0511d5d99991"
 			}
 		},
 		"metadata": {
 			"saveOutput": true,
-			"synapse_widget": {
-				"version": "0.1",
-				"state": {
-					"f8b4dc98-f325-4d64-a37a-05b7067033d4": {
-						"type": "Synapse.DataFrame",
-						"sync_state": {
-							"table": {
-								"rows": [
-									{
-										"0": "88875",
-										"1": "25718",
-										"2": "Osteen",
-										"3": "Florida",
-										"4": "United States",
-										"5": "North America",
-										"6": "Southeast",
-										"7": "Americas",
-										"8": "Northern America",
-										"9": "POINT (-81.1625612 28.8461019)",
-										"10": "0",
-										"11": "2013-07-01T16:00:00Z",
-										"12": "2014-07-01T16:00:00Z",
-										"13": "1"
-									},
-									{
-										"0": "88876",
-										"1": "25766",
-										"2": "Otter Creek",
-										"3": "Florida",
-										"4": "United States",
-										"5": "North America",
-										"6": "Southeast",
-										"7": "Americas",
-										"8": "Northern America",
-										"9": "POINT (-82.7717811 29.3249653)",
-										"10": "134",
-										"11": "2013-07-01T16:00:00Z",
-										"12": "2014-07-01T16:00:00Z",
-										"13": "1"
-									},
-									{
-										"0": "88877",
-										"1": "25817",
-										"2": "Oviedo",
-										"3": "Florida",
-										"4": "United States",
-										"5": "North America",
-										"6": "Southeast",
-										"7": "Americas",
-										"8": "Northern America",
-										"9": "POINT (-81.2081203 28.669997)",
-										"10": "33342",
-										"11": "2013-07-01T16:00:00Z",
-										"12": "2014-07-01T16:00:00Z",
-										"13": "1"
-									},
-									{
-										"0": "88878",
-										"1": "25872",
-										"2": "Oxford",
-										"3": "Florida",
-										"4": "United States",
-										"5": "North America",
-										"6": "Southeast",
-										"7": "Americas",
-										"8": "Northern America",
-										"9": "POINT (-82.0373084 28.927484)",
-										"10": "0",
-										"11": "2013-07-01T16:00:00Z",
-										"12": "2014-07-01T16:00:00Z",
-										"13": "1"
-									},
-									{
-										"0": "88879",
-										"1": "25902",
-										"2": "Pace",
-										"3": "Florida",
-										"4": "United States",
-										"5": "North America",
-										"6": "Southeast",
-										"7": "Americas",
-										"8": "Northern America",
-										"9": "POINT (-87.1610808 30.5993603)",
-										"10": "20039",
-										"11": "2013-07-01T16:00:00Z",
-										"12": "2014-07-01T16:00:00Z",
-										"13": "1"
-									},
-									{
-										"0": "88880",
-										"1": "25943",
-										"2": "Pahokee",
-										"3": "Florida",
-										"4": "United States",
-										"5": "North America",
-										"6": "Southeast",
-										"7": "Americas",
-										"8": "Northern America",
-										"9": "POINT (-80.6653351 26.8200607)",
-										"10": "5649",
-										"11": "2013-07-01T16:00:00Z",
-										"12": "2014-07-01T16:00:00Z",
-										"13": "1"
-									},
-									{
-										"0": "88881",
-										"1": "25962",
-										"2": "Paisley",
-										"3": "Florida",
-										"4": "United States",
-										"5": "North America",
-										"6": "Southeast",
-										"7": "Americas",
-										"8": "Northern America",
-										"9": "POINT (-81.5417375 28.9835966)",
-										"10": "818",
-										"11": "2013-07-01T16:00:00Z",
-										"12": "2014-07-01T16:00:00Z",
-										"13": "1"
-									},
-									{
-										"0": "88882",
-										"1": "25972",
-										"2": "Palatka",
-										"3": "Florida",
-										"4": "United States",
-										"5": "North America",
-										"6": "Southeast",
-										"7": "Americas",
-										"8": "Northern America",
-										"9": "POINT (-81.6375819 29.6485801)",
-										"10": "10558",
-										"11": "2013-07-01T16:00:00Z",
-										"12": "2014-07-01T16:00:00Z",
-										"13": "1"
-									},
-									{
-										"0": "88883",
-										"1": "25993",
-										"2": "Palm Bay",
-										"3": "Florida",
-										"4": "United States",
-										"5": "North America",
-										"6": "Southeast",
-										"7": "Americas",
-										"8": "Northern America",
-										"9": "POINT (-80.5886646 28.0344621)",
-										"10": "103190",
-										"11": "2013-07-01T16:00:00Z",
-										"12": "2014-07-01T16:00:00Z",
-										"13": "1"
-									},
-									{
-										"0": "88884",
-										"1": "25994",
-										"2": "Palm Beach",
-										"3": "Florida",
-										"4": "United States",
-										"5": "North America",
-										"6": "Southeast",
-										"7": "Americas",
-										"8": "Northern America",
-										"9": "POINT (-80.0364297 26.7056206)",
-										"10": "8348",
-										"11": "2013-07-01T16:00:00Z",
-										"12": "2014-07-01T16:00:00Z",
-										"13": "1"
-									}
-								],
-								"schema": [
-									{
-										"key": "0",
-										"name": "88874",
-										"type": "string"
-									},
-									{
-										"key": "1",
-										"name": "25706",
-										"type": "string"
-									},
-									{
-										"key": "2",
-										"name": "Osprey",
-										"type": "string"
-									},
-									{
-										"key": "3",
-										"name": "Florida",
-										"type": "string"
-									},
-									{
-										"key": "4",
-										"name": "United States",
-										"type": "string"
-									},
-									{
-										"key": "5",
-										"name": "North America",
-										"type": "string"
-									},
-									{
-										"key": "6",
-										"name": "Southeast",
-										"type": "string"
-									},
-									{
-										"key": "7",
-										"name": "Americas",
-										"type": "string"
-									},
-									{
-										"key": "8",
-										"name": "Northern America",
-										"type": "string"
-									},
-									{
-										"key": "9",
-										"name": "POINT (-82.4903748 27.1961627)",
-										"type": "string"
-									},
-									{
-										"key": "10",
-										"name": "6100",
-										"type": "string"
-									},
-									{
-										"key": "11",
-										"name": "2013-07-01T16:00:00Z",
-										"type": "string"
-									},
-									{
-										"key": "12",
-										"name": "2014-07-01T16:00:00Z",
-										"type": "string"
-									},
-									{
-										"key": "13",
-										"name": "1",
-										"type": "string"
-									}
-								],
-								"truncated": false
-							},
-							"isSummary": false,
-							"language": "scala"
-						},
-						"persist_state": {
-							"view": {
-								"type": "details",
-								"chartOptions": {
-									"chartType": "bar",
-									"aggregationType": "count",
-									"categoryFieldKeys": [
-										"0"
-									],
-									"seriesFieldKeys": [
-										"0"
-									],
-									"isStacked": false
-								}
-							}
-						}
-					},
-					"e906d175-86da-4cbd-b142-20e8a4d4a19e": {
-						"type": "Synapse.DataFrame",
-						"sync_state": {
-							"table": {
-								"rows": [
-									{
-										"0": "9454384",
-										"1": "Riikka",
-										"2": "86",
-										"3": "ortho",
-										"4": "21.07.2021"
-									},
-									{
-										"0": "9266396",
-										"1": "Fanny",
-										"2": "86",
-										"3": "ortho",
-										"4": "03.06.2021"
-									},
-									{
-										"0": "5247541",
-										"1": "Urooj",
-										"2": "35",
-										"3": "cardio",
-										"4": "21.08.2021"
-									}
-								],
-								"schema": [
-									{
-										"key": "0",
-										"name": "2984641",
-										"type": "string"
-									},
-									{
-										"key": "1",
-										"name": "Emily",
-										"type": "string"
-									},
-									{
-										"key": "2",
-										"name": "35",
-										"type": "string"
-									},
-									{
-										"key": "3",
-										"name": "cardio",
-										"type": "string"
-									},
-									{
-										"key": "4",
-										"name": "01.09.2021",
-										"type": "string"
-									}
-								],
-								"truncated": false
-							},
-							"isSummary": false,
-							"language": "scala"
-						},
-						"persist_state": {
-							"view": {
-								"type": "details",
-								"chartOptions": {
-									"chartType": "bar",
-									"aggregationType": "count",
-									"categoryFieldKeys": [
-										"0"
-									],
-									"seriesFieldKeys": [
-										"0"
-									],
-									"isStacked": false
-								}
-							}
-						}
-					}
-				}
-			},
 			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "python"
+			},
 			"language_info": {
 				"name": "python"
 			},
 			"a365ComputeOptions": {
-				"id": "/subscriptions/12a9c9ee-0cbb-4ea3-8995-63a79485e92b/resourceGroups/SynapseRG/providers/Microsoft.Synapse/workspaces/shared-vnet-workspace/bigDataPools/spk32",
-				"name": "spk32",
+				"id": "/subscriptions/12a9c9ee-0cbb-4ea3-8995-63a79485e92b/resourceGroups/SynapseRG/providers/Microsoft.Synapse/workspaces/shared-vnet-workspace/bigDataPools/spk33",
+				"name": "spk33",
 				"type": "Spark",
-				"endpoint": "https://shared-vnet-workspace.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/spk32",
+				"endpoint": "https://shared-vnet-workspace.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/spk33",
 				"auth": {
 					"type": "AAD",
-					"authResource": "https://dev.azuresynapse.net",
-					"authHeader": null
+					"authResource": "https://dev.azuresynapse.net"
 				},
-				"sparkVersion": "3.2",
+				"sparkVersion": "3.3",
 				"nodeCount": 10,
-				"cores": 4,
-				"memory": 28,
-				"extraHeader": null
+				"cores": 8,
+				"memory": 56,
+				"automaticScaleJobs": false
 			},
 			"sessionKeepAliveTimeout": 30
 		},
