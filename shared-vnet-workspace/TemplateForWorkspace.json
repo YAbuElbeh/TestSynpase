@@ -169,21 +169,21 @@
 				"nbformat": 4,
 				"nbformat_minor": 2,
 				"bigDataPool": {
-					"referenceName": "spk32",
+					"referenceName": "spk33",
 					"type": "BigDataPoolReference"
 				},
 				"sessionProperties": {
-					"driverMemory": "28g",
-					"driverCores": 4,
-					"executorMemory": "28g",
-					"executorCores": 4,
+					"driverMemory": "56g",
+					"driverCores": 8,
+					"executorMemory": "56g",
+					"executorCores": 8,
 					"numExecutors": 2,
 					"runAsWorkspaceSystemIdentity": false,
 					"conf": {
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "83b42c52-fe26-4327-a347-6a07b8d13b15"
+						"spark.autotune.trackingId": "1873cdea-3706-4741-a48d-519cb0ffff2e"
 					}
 				},
 				"metadata": {
@@ -197,18 +197,18 @@
 						"name": "python"
 					},
 					"a365ComputeOptions": {
-						"id": "/subscriptions/12a9c9ee-0cbb-4ea3-8995-63a79485e92b/resourceGroups/SynapseRG/providers/Microsoft.Synapse/workspaces/shared-vnet-workspace/bigDataPools/spk32",
-						"name": "spk32",
+						"id": "/subscriptions/12a9c9ee-0cbb-4ea3-8995-63a79485e92b/resourceGroups/SynapseRG/providers/Microsoft.Synapse/workspaces/shared-vnet-workspace/bigDataPools/spk33",
+						"name": "spk33",
 						"type": "Spark",
-						"endpoint": "https://shared-vnet-workspace.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/spk32",
+						"endpoint": "https://shared-vnet-workspace.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/spk33",
 						"auth": {
 							"type": "AAD",
 							"authResource": "https://dev.azuresynapse.net"
 						},
-						"sparkVersion": "3.2",
+						"sparkVersion": "3.3",
 						"nodeCount": 10,
-						"cores": 4,
-						"memory": 28,
+						"cores": 8,
+						"memory": 56,
 						"automaticScaleJobs": false
 					},
 					"sessionKeepAliveTimeout": 30
@@ -1522,18 +1522,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/test1')]",
-			"type": "Microsoft.Synapse/workspaces/sqlPools",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"collation": "SQL_Latin1_General_CP1_CI_AS",
-				"maxSizeBytes": 263882790666240,
-				"annotations": []
-			},
-			"dependsOn": [],
-			"location": "westeurope"
-		},
-		{
 			"name": "[concat(parameters('workspaceName'), '/spk32')]",
 			"type": "Microsoft.Synapse/workspaces/bigDataPools",
 			"apiVersion": "2019-06-01-preview",
@@ -1606,6 +1594,18 @@
 				"sparkVersion": "3.3",
 				"isComputeIsolationEnabled": false,
 				"sessionLevelPackagesEnabled": false,
+				"annotations": []
+			},
+			"dependsOn": [],
+			"location": "westeurope"
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/test1')]",
+			"type": "Microsoft.Synapse/workspaces/sqlPools",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"collation": "SQL_Latin1_General_CP1_CI_AS",
+				"maxSizeBytes": 263882790666240,
 				"annotations": []
 			},
 			"dependsOn": [],
