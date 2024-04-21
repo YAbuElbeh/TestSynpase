@@ -4,21 +4,21 @@
 		"nbformat": 4,
 		"nbformat_minor": 2,
 		"bigDataPool": {
-			"referenceName": "spk32",
+			"referenceName": "spk33",
 			"type": "BigDataPoolReference"
 		},
 		"sessionProperties": {
-			"driverMemory": "28g",
-			"driverCores": 4,
-			"executorMemory": "28g",
-			"executorCores": 4,
+			"driverMemory": "56g",
+			"driverCores": 8,
+			"executorMemory": "56g",
+			"executorCores": 8,
 			"numExecutors": 2,
 			"runAsWorkspaceSystemIdentity": false,
 			"conf": {
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "a11a1ac0-f2bc-41bf-b4bb-1677d97cd007"
+				"spark.autotune.trackingId": "04374f5a-68b7-4db7-a42c-36cdd2b37204"
 			}
 		},
 		"metadata": {
@@ -32,18 +32,18 @@
 				"name": "python"
 			},
 			"a365ComputeOptions": {
-				"id": "/subscriptions/12a9c9ee-0cbb-4ea3-8995-63a79485e92b/resourceGroups/SynapseRG/providers/Microsoft.Synapse/workspaces/shared-vnet-workspace/bigDataPools/spk32",
-				"name": "spk32",
+				"id": "/subscriptions/12a9c9ee-0cbb-4ea3-8995-63a79485e92b/resourceGroups/SynapseRG/providers/Microsoft.Synapse/workspaces/shared-vnet-workspace/bigDataPools/spk33",
+				"name": "spk33",
 				"type": "Spark",
-				"endpoint": "https://shared-vnet-workspace.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/spk32",
+				"endpoint": "https://shared-vnet-workspace.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/spk33",
 				"auth": {
 					"type": "AAD",
 					"authResource": "https://dev.azuresynapse.net"
 				},
-				"sparkVersion": "3.2",
+				"sparkVersion": "3.3",
 				"nodeCount": 10,
-				"cores": 4,
-				"memory": 28,
+				"cores": 8,
+				"memory": 56,
 				"automaticScaleJobs": false
 			},
 			"sessionKeepAliveTimeout": 30
