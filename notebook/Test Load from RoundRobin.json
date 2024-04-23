@@ -1,0 +1,179 @@
+{
+	"name": "Test Load from RoundRobin",
+	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "spk33",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "56g",
+			"driverCores": 8,
+			"executorMemory": "56g",
+			"executorCores": 8,
+			"numExecutors": 2,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "a0717c18-aa56-4c76-a422-5970a479aa6b"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/12a9c9ee-0cbb-4ea3-8995-63a79485e92b/resourceGroups/SynapseRG/providers/Microsoft.Synapse/workspaces/shared-vnet-workspace/bigDataPools/spk33",
+				"name": "spk33",
+				"type": "Spark",
+				"endpoint": "https://shared-vnet-workspace.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/spk33",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "3.3",
+				"nodeCount": 10,
+				"cores": 8,
+				"memory": 56,
+				"automaticScaleJobs": false
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"metadata": {
+					"collapsed": false
+				},
+				"source": [
+					"from pyspark.sql import SparkSession\r\n",
+					"from pyspark.sql.types import StructType, StructField, IntegerType, StringType\r\n",
+					"\r\n",
+					"custom_schema = StructType([\r\n",
+					"    StructField(\"pid\", IntegerType(), True),\r\n",
+					"    StructField(\"name\", StringType(), True),\r\n",
+					"    StructField(\"did\", IntegerType(), True),\r\n",
+					"    StructField(\"dname\", StringType(), True),\r\n",
+					"    StructField(\"visitdate\", StringType(), True)\r\n",
+					"])\r\n",
+					"\r\n",
+					"df = spark.read.load('abfss://sharedvnetworkspace@sharedvnetworkspace.dfs.core.windows.net/TestRead/patients_visit_data_css_test.csv', format='csv', header=True, schema=custom_schema\r\n",
+					")\r\n",
+					"display(df.limit(10))"
+				],
+				"execution_count": 12
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"# writing to the hash table directly \r\n",
+					"import com.microsoft.spark.sqlanalytics\r\n",
+					"\r\n",
+					"\r\n",
+					"df.write.mode('append').format('parquet').synapsesql(f'DedicatedSQLPool.dbo.Patient_visit_final_table')"
+				],
+				"execution_count": 13
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"from pyspark.sql import SparkSession\r\n",
+					"from pyspark.sql.types import StructType, StructField, IntegerType, StringType, DoubleType, LongType\r\n",
+					"\r\n",
+					"custom_schema = StructType([\r\n",
+					"    StructField(\"vendorid\" , IntegerType(), True),\r\n",
+					"    StructField(\"tpep_pickup_datetime\", StringType(), True),\r\n",
+					"    StructField(\"tpep_dropoff_datetime\",  StringType(), True),\r\n",
+					"    StructField(\"passenger_count\" , LongType(), True),\r\n",
+					"    StructField(\"trip_distance\" , DoubleType(), True),\r\n",
+					"    StructField(\"ratecodeid\" , LongType(), True),\r\n",
+					"    StructField(\"store_and_fwd_flag\" ,  StringType(), True),\r\n",
+					"    StructField(\"pulocationid\" , IntegerType(), True),\r\n",
+					"    StructField(\"dolocationid\" , IntegerType(), True),\r\n",
+					"    StructField(\"payment_type\" , LongType(), True),\r\n",
+					"    StructField(\"fare_amount\" , DoubleType(), True),\r\n",
+					"    StructField(\"extra\" , DoubleType(), True),\r\n",
+					"    StructField(\"mta_tax\" , DoubleType(), True),\r\n",
+					"    StructField(\"tip_amount\" , DoubleType(), True),\r\n",
+					"    StructField(\"tolls_amount\" , DoubleType(), True),\r\n",
+					"    StructField(\"improvement_surcharge\" , DoubleType(), True),\r\n",
+					"    StructField(\"total_amount\" , DoubleType(), True),\r\n",
+					"    StructField(\"congestion_surcharge\" , DoubleType(), True),\r\n",
+					"    StructField(\"airport_fee\" , DoubleType(), True)\r\n",
+					"])\r\n",
+					"\r\n",
+					"df = spark.read.load('abfss://sharedvnetworkspace@sharedvnetworkspace.dfs.core.windows.net/TestRead/yellow_tripdata_2023-02.parquet', format='parquet', )\r\n",
+					"display(df.limit(5))"
+				],
+				"execution_count": 34
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"df.write.mode('append').synapsesql(f'DedicatedSQLPool.dbo.yellow_trip_final_table') # hash"
+				],
+				"execution_count": 38
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"df.write.mode('append').synapsesql(f'DedicatedSQLPool.dbo.yellow_trip') # round robin"
+				],
+				"execution_count": 37
+			}
+		]
+	}
+}

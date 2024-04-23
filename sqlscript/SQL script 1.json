@@ -2,7 +2,7 @@
 	"name": "SQL script 1",
 	"properties": {
 		"content": {
-			"query": "CREATE TABLE Patient_visit\n(\n    PID\tint,\n    Name VARCHAR(50),\n    DID int,\n    DName VARCHAR(50),\n    VisitDate VARCHAR(50)\n)\nWITH\n(\n    DISTRIBUTION = ROUND_ROBIN\n);",
+			"query": "drop table yellow_trip;\n\nCREATE TABLE yellow_trip\n(\n    VendorID integer,\n    tpep_pickup_datetime datetime,\n    tpep_dropoff_datetime  datetime,\n    passenger_count BIGINT,\n    trip_distance FLOAT,\n    RatecodeID BIGINT,\n    store_and_fwd_flag VARCHAR(50),\n    PULocationID integer,\n    DOLocationID integer,\n    payment_type BIGINT,\n    fare_amount FLOAT,\n    extra FLOAT,\n    mta_tax FLOAT,\n    tip_amount FLOAT,\n    tolls_amount FLOAT,\n    improvement_surcharge FLOAT,\n    total_amount FLOAT,\n    congestion_surcharge FLOAT,\n    Airport_fee FLOAT\n)\nWITH\n(\n    DISTRIBUTION = ROUND_ROBIN\n);\n\ndrop table yellow_trip_final_table;\n\nCREATE TABLE yellow_trip_final_table\n(\n    VendorID integer,\n    tpep_pickup_datetime datetime  ,\n    tpep_dropoff_datetime  datetime  ,\n    passenger_count BIGINT,\n    trip_distance FLOAT,\n    RatecodeID BIGINT,\n    store_and_fwd_flag VARCHAR(50),\n    PULocationID integer,\n    DOLocationID integer,\n    payment_type BIGINT,\n    fare_amount FLOAT,\n    extra FLOAT,\n    mta_tax FLOAT,\n    tip_amount FLOAT,\n    tolls_amount FLOAT,\n    improvement_surcharge FLOAT,\n    total_amount FLOAT,\n    congestion_surcharge FLOAT,\n    Airport_fee FLOAT\n)\nWITH\n(\n    DISTRIBUTION = HASH(store_and_fwd_flag),\n    CLUSTERED COLUMNSTORE INDEX\n);",
 			"metadata": {
 				"language": "sql"
 			},
