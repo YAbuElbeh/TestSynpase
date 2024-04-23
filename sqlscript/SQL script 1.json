@@ -1,0 +1,17 @@
+{
+	"name": "SQL script 1",
+	"properties": {
+		"content": {
+			"query": "CREATE TABLE Patient_visit\n(\n    PID\tint,\n    Name VARCHAR(50),\n    DID int,\n    DName VARCHAR(50),\n    VisitDate VARCHAR(50)\n)\nWITH\n(\n    DISTRIBUTION = ROUND_ROBIN\n);",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "DedicatedSQLPool",
+				"poolName": "DedicatedSQLPool"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
