@@ -1,0 +1,14 @@
+{
+	"name": "sparkConfiguration1",
+	"properties": {
+		"configs": {
+			"spark.driver.memory": "1g"
+		},
+		"created": "2024-05-13T17:45:00.5630000+03:00",
+		"createdBy": "yabuelbeh@microsoft.com",
+		"annotations": [],
+		"configMergeRule": {
+			"artifact.currentOperation.spark.driver.memory": "replace"
+		}
+	}
+}
